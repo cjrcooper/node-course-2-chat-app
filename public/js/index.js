@@ -2,19 +2,38 @@
   var socket = io();
   
   socket.on('connect', function () {
-    console.log('connected to server');
-    
-    socket.emit('createMessage', {
-      from: 'Andrew',
-      text: 'Yep that works for me!'
-    })
+    console.log('Connected to server');
   });
   
   
   socket.on('disconnect', function () {
-    console.log('server has disconnected');
+    console.log('Disconnected from server');
   })
   
   socket.on('newMessage', function (message) {
     console.log('newMessage', message);
+    
+    var li = jQuery('<li></li>');
+    li.text(`${message.from}: ${message.text}`);
+    
+    jQuery('#messages').append(li);
+  });
+  
+  
+  socket.emit('createMessage', {
+    from: 'Frank',
+    text: 'Hi'
+  }, function () {
+    console.log('Got it')
+  })
+  
+  jQuery('#message-form').on('submit', function(e) {
+    e.preventDefault();
+    
+    socket.emit('createMessage', {
+      from: 'User',
+      text: jQuery('[name=message]').val()
+    }, function() {
+      
+    });
   });
